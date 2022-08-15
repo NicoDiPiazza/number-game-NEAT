@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!-- This is based on DillingerLee's great template here:
+https://github.com/Team-Code/KA_Offline -->
+<html> 
+ <head>
+    <title>Processing.JS inside Webpages: Template</title> 
+<style>
+#deto{
+position: absolute;
+}
+#detom{
+position: absolute;
+}
+</style>
+</head>
+ <body>
+    <p align="center"> 
+	<!--This draws the Canvas on the webpage -->
+      <canvas id="mycanvas"></canvas> 
+    </p>
+<audio autoplay loop>
+<source src = "/storage/emulated/0/music/Drum Pad Machine records/happy videogame.wav" style = (audio/wav)>
+</audio>
+ </body>
+ <!img id = "deto" src = "/storage/emulated/0/20200128_075238.png" width = 75, height = 75>
+ <!img id = "detom" src = "/storage/emulated/0/DCIM/Screenshots/20200324_150334.png" width = 75, height = 75>
+
+ <!-- Run all the JavaScript stuff -->
+ <!-- Include the processing.js library -->
+ <!-- See https://khanacademy.zendesk.com/hc/en-us/articles/202260404-What-parts-of-ProcessingJS-does-Khan-Academy-support- for differences -->
+ <script src="https://cdn.jsdelivr.net/processing.js/1.4.8/processing.min.js"></script> 
+ <script>
+
+    var sketchProc = function(processingInstance) {
+     with (processingInstance) {
+        size(1000, 400); 
+        frameRate(30);
+        
+        // Program Code Goes Here in processing js
+
+// description: creates a preset amount of bots, has them count as quickly as they can to a goal, and the ones who reach the goal are cloned, and have mutated offspring, who replace the second and worse half
+// 		who do not reach the goal as quickly. This process continues endlessly. Most things are tweakable from the VARS section. Sorry in advance for the very disorganized coding
+
+
+// By: Domenico Di Piazza
+// 12/22/21
+
+
+
+
+
+
+
+
+// function definitions
+
+var avg = function(a){
+	// a is an array
+	sum = 0;
+
+	for (i = 0; i < a.length; i++){
+		sum = sum + a[i];
+
+
+	};
+
+	middle = sum/a.length;
+	text(middle, 600, 100);
+
+};
+
+
+
+
+// vars
+
+// mutation factor
+mutFactor = 0.5;
+
+
+
+// max and min fitness
+
+maxF = 5;
+
+minF = 1;
+
+
+// how many bots per generation
+
+botAmount = 20;
+
+// how many generations?
+gens = 1;
+
+//empty array we will fill with each bot's brain
+
+allBotArrays = [];
+
+
+// info for some diplays (can be gotten rid of, if neccessary)
+botBill = [botAmount, "bill", random(-1, 1)];
+
+// win condition
+score = 0;
+winNum = 200;
+
+
+// how many bots have won
+haveWon = 0;
+
+// keeps track of each of their individual scores
+
+indScore = []
+for ( i = 0; i < botAmount; i++){
+			indScore[i] = 0;
+			text(indScore[i], 400, (12 * i) + 50);
+		};
+
+
+// calculations
+
+
+// calculating each bot's brain
+
+for (i = 0; i < botAmount; i++){
+		allBotArrays[i] = random(minF, maxF);
+		
+	};
+
+// where they play the game and get updated
+
+draw = function(){
+
+	background(250, 250, 250);
+
+
+// checking whether or not they score at all
+	if (botBill[2] >= 0.5 && score < winNum){
+
+// putting in each score of each individual bot
+
+		for ( i = 0; i < botAmount; i++){
+			if (indScore[i] < winNum){
+				indScore[i] = indScore[i] + allBotArrays[i];
+			};
+			if (indScore[i] > winNum){
+				indScore[i] = winNum;
+				haveWon++
+			};
+		};
+		score++
+	};
+
+
+	
+//killing half once half have reached the goal
+
+	if (haveWon >= botAmount/2){
+//(we will need these variables in a sec)
+		savedBrains = 0;
+		holderArray = [];
+// filling holder with zeros
+		for (i = 0; i < botAmount; i++){
+			holderArray[i] = 0;
+
+		};
+
+		//cloning the successful ones
+
+		for (i = 0; i < botAmount; i++){
+			if (indScore[i] >= winNum && savedBrains < botAmount/2){
+				holderArray[savedBrains] = holderArray[savedBrains] + allBotArrays[i];
+				savedBrains++
+			};
+		};
+
+// mutating the children
+
+		for (i = 0; i < botAmount/2; i++){
+			holderArray[i + botAmount/2] = holderArray[i] + random(-(mutFactor), mutFactor);
+		};
+
+
+// resetting things for the next generation
+		gens++
+
+		for ( i = 0; i < botAmount; i++){
+			indScore[i] = 0;
+			
+		};
+		score = 0;
+		haveWon = 0;
+
+
+
+		allBotArrays = holderArray;
+	};
+
+
+
+
+	if (winNum > score){
+		botBill[2] = random(-1, 1);
+	};
+	// displays
+
+	fill(250, 20, 50);
+	text(score, 20, 100, 100);
+
+
+	fill(0, 0, 0);
+	text(botBill, 100, 100);
+	text(haveWon, 100, 130);
+	text(gens, 100, 160);
+
+	for (i = 0; i < botAmount; i++){
+		text(allBotArrays[i], 300,  (12 * i) + 50);
+	};
+
+	for ( i = 0; i < botAmount; i++){
+			
+			text(indScore[i], 400, (12 * i) + 50);
+		};
+	text(allBotArrays.length, 500, 100);
+	avg(allBotArrays);
+
+};
+
+
+
+
+
+//dont touch anything past here
+
+};
+};
+    // Get the canvas that Processing-js will use
+    var canvas = document.getElementById("mycanvas"); 
+    // Pass the function sketchProc (defined in myCode.js) to Processing's constructor.
+    var processingInstance = new Processing(canvas, sketchProc); 
+ </script>
+
+</html>
