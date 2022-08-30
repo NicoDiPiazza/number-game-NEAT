@@ -19,7 +19,6 @@ position: absolute;
       <canvas id="mycanvas"></canvas> 
     </p>
 <audio autoplay loop>
-<source src = "/storage/emulated/0/music/Drum Pad Machine records/happy videogame.wav" style = (audio/wav)>
 </audio>
  </body>
  <!img id = "deto" src = "/storage/emulated/0/20200128_075238.png" width = 75, height = 75>
@@ -88,8 +87,12 @@ minF = 1;
 
 // how many bots per generation
 
-botAmount = 20;
+botAmount = 1000;
 
+
+// fraction of bots needed to ascend
+
+frac = 1/100;
 // how many generations?
 gens = 1;
 
@@ -156,7 +159,7 @@ draw = function(){
 	
 //killing half once half have reached the goal
 
-	if (haveWon >= botAmount/2){
+	if (haveWon >= botAmount*frac){
 //(we will need these variables in a sec)
 		savedBrains = 0;
 		holderArray = [];
@@ -177,8 +180,8 @@ draw = function(){
 
 // mutating the children
 
-		for (i = 0; i < botAmount/2; i++){
-			holderArray[i + botAmount/2] = holderArray[i] + random(-(mutFactor), mutFactor);
+		for (i = 0; i < botAmount - (botAmount*frac); i++){
+			holderArray[i + (botAmount*frac)] = holderArray[i] + random(-(mutFactor), mutFactor);
 		};
 
 
@@ -242,3 +245,4 @@ draw = function(){
  </script>
 
 </html>
+
